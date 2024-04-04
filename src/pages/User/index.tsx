@@ -1,11 +1,16 @@
 import React from 'react'
 import { Button, View, Text, Alert } from 'react-native'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 
 import MyInput from '../../components/MyInput'
 
 import styles from './styles'
 
 export default function UserPage() {
+
+    const navigation = useNavigation<NavigationProp<any>>()
+
+    navigation.setOptions({ title: 'Novo Usuário' })
 
     const [name, setName] = React.useState('')
     const [username, setUsername] = React.useState('')
@@ -40,8 +45,6 @@ export default function UserPage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title} >Cadastro de Usuário</Text>
-
             <MyInput title='Nome' value={name} change={setName} />
             <MyInput title='Login' value={username} change={setUsername} />
             <MyInput title='Senha' value={password} change={setPassword} isPassword />
