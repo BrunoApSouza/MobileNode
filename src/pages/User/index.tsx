@@ -5,6 +5,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native'
 import MyInput from '../../components/MyInput'
 
 import styles from './styles'
+import { userService } from '../../services/user.service'
 
 export default function UserPage() {
 
@@ -35,12 +36,17 @@ export default function UserPage() {
             return
         }
         
-        Alert.alert('Usuário cadastrado com sucesso')
-
-        setName('')
-        setUsername('')
-        setPassword('')
-        setConfirmPass('')
+        userService.create(name, username, password).then(result => {
+            if (result === true) {                
+                setName('')
+                setUsername('')
+                setPassword('')
+                setConfirmPass('')
+                navigation.goBack()
+            } else {
+                Alert.alert(result+'')
+            }
+        }).catch(error => console.error(error))
     }
 
     return (

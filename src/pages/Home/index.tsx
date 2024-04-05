@@ -1,13 +1,14 @@
 import React from 'react'
-import { Button, Text, View } from "react-native"
+import { Alert, Button, FlatList, Text, View } from "react-native"
 import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { authRepository } from '../../services/auth.repository'
+import { userService } from '../../services/user.service'
+import UserView from '../../components/UserView'
 
 export default function HomePage() {
 
     const navigation = useNavigation<NavigationProp<any>>()
 
-    const [user, setUser] = React.useState({ name: '' })
+    const [users, setUsers] = React.useState<any[]>([])
 
     navigation.setOptions({
         headerLeft: () => <Button title="Sair" onPress={logOut} />,
@@ -18,7 +19,9 @@ export default function HomePage() {
         )
     })
 
-    authRepository.getLoggedUser().then(logged => setUser(logged))
+    React.useEffect(() => {
+        fetchUser()
+    }, [])
 
     function logOut() {
         navigation.goBack()
@@ -28,10 +31,22 @@ export default function HomePage() {
         navigation.navigate('User')
     }
 
+    async function fetchUser() {
+        const list = await userService.get()
+        if (list) setUsers(list)
+        else logOut()
+    }
+
+    function editUser(id: number) {
+        navigation.navigate('User') // e passar o id como parametro
+    }
+
     return (
         <View>
-            <Text>Listagem de Usuários</Text>
-            <Text>Seja bem vindo, {user.name}</Text>
+            <FlatList
+                data={users}
+                renderItem={({ item }) => <UserView user={item} edit={editUser} />}
+            />
         </View>
     )
 }
