@@ -8,18 +8,19 @@ export default function HomePage() {
 
     const navigation = useNavigation<NavigationProp<any>>()
 
+    const [refreshing, setRefreshing] = React.useState(false)
     const [users, setUsers] = React.useState<any[]>([])
 
-    navigation.setOptions({
-        headerLeft: () => <Button title="Sair" onPress={logOut} />,
-        headerRight: () => (
-            <>
-                <Button title="Add" onPress={goToUser} />
-            </>
-        )
-    })
-
     React.useEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => <Button title="Sair" onPress={logOut} />,
+            headerRight: () => (
+                <>
+                    <Button title="Add" onPress={goToUser} />
+                </>
+            )
+        })
+
         fetchUser()
     }, [])
 
@@ -32,20 +33,36 @@ export default function HomePage() {
     }
 
     async function fetchUser() {
-        const list = await userService.get()
-        if (list) setUsers(list)
-        else logOut()
+        setRefreshing(true)
+        try {
+            const list = await userService.get()
+            if (list) setUsers(list)
+            else logOut()
+        } catch (error) {
+            console.error(error)
+        }
+        setRefreshing(false)
     }
 
     function editUser(id: number) {
-        navigation.navigate('User') // e passar o id como parametro
+        navigation.navigate('User', { id })
+    }
+
+    function removeUser(id: number) {
+        userService.remove(id).then(isDeleted => {
+            if (isDeleted) fetchUser()
+        })
     }
 
     return (
         <View>
             <FlatList
                 data={users}
-                renderItem={({ item }) => <UserView user={item} edit={editUser} />}
+                refreshing={refreshing}
+                onRefresh={fetchUser}
+                renderItem={({ item }) =>
+                    <UserView user={item} edit={editUser} remove={removeUser} />
+                }
             />
         </View>
     )

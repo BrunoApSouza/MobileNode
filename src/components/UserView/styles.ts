@@ -19,6 +19,18 @@ export default StyleSheet.create({
 
     subTitle: {
         fontSize: 12,
-    }
+    },
+
+    deleteContainer: {
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: 'red',
+        justifyContent: 'center',
+    },
+
+    deleteText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
 
 })

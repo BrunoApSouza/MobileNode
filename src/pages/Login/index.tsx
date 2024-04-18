@@ -13,8 +13,6 @@ export default function LoginPage() {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
 
-    navigation.setOptions({ title: 'Página de Acesso' })
-
     function signIn() {
         authService.login(username, password).then(isLogged => {
             if (isLogged) {
