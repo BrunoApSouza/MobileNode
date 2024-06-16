@@ -1,3 +1,5 @@
+/* COMENTEI ESTE CODIGO EXISTENTE
+
 import React from 'react'
 import { Button, View, Text, Alert } from 'react-native'
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native'
@@ -108,4 +110,125 @@ export default function UserPage() {
 
         </View>
     )
+}
+
+*/
+
+
+
+import React, { useState, useEffect } from 'react';
+import { Button, View, Alert } from 'react-native';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+
+import MyInput from '../../components/MyInput';
+import styles from './styles';
+import { userService } from '../../services/user.service';
+
+export default function UserPage() {
+    const navigation = useNavigation<NavigationProp<any>>();
+    const route = useRoute();
+
+    const id: number = route.params ? (route.params as any).id : 0;
+
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
+    const [roles, setRoles] = useState<string[]>([]);
+
+    const fetchUser = () => {
+        if (id > 0) {
+            userService.getById(id).then(user => {
+                setName(user.name);
+                setUsername(user.username);
+                setRoles(user.roles);
+            }).catch(error => console.error(error));
+        }
+    };
+
+    useEffect(() => {
+        fetchUser();
+
+        if (id === 0) {
+            navigation.setOptions({ title: 'Novo Usuário' });
+        } else {
+            navigation.setOptions({ title: 'Editar Usuário' });
+        }
+    }, [id]);
+
+    const create = () => {
+        if (!name || name.trim().length < 1) {
+            Alert.alert('Nome é obrigatório');
+            return;
+        }
+        if (!username || username.trim().length < 1) {
+            Alert.alert('Login é obrigatório');
+            return;
+        }
+        if (!password || password.trim().length < 1) {
+            Alert.alert('Senha é obrigatória');
+            return;
+        }
+        if (password !== confirmPass) {
+            Alert.alert('Senha não confere');
+            return;
+        }
+        
+        userService.create(name, username, password).then(result => {
+            if (result === true) {
+                setName('');
+                setUsername('');
+                setPassword('');
+                setConfirmPass('');
+                navigation.goBack();
+            } else {
+                Alert.alert(result + '');
+            }
+        }).catch(error => console.error(error));
+    };
+
+    const update = () => {
+        if (!name || name.trim().length < 1) {
+            Alert.alert('Nome é obrigatório');
+            return;
+        }
+        
+        userService.update(id, name).then(result => {
+            if (result === true) {
+                setName('');
+                setUsername('');
+                navigation.goBack();
+            } else {
+                Alert.alert(result + '');
+            }
+        }).catch(error => console.error(error));
+    };
+
+    const save = () => {
+        if (id > 0) {
+            update();
+        } else {
+            create();
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+            <MyInput title="Nome" value={name} change={setName} />
+            <MyInput title="Login" value={username} change={setUsername} disabled={id > 0} />
+            {id === 0 && (
+                <>
+                    <MyInput title="Senha" value={password} change={setPassword} isPassword />
+                    <MyInput title="Confirmar Senha" value={confirmPass} change={setConfirmPass} isPassword />
+                </>
+            )}
+
+            {/* Lista ou dropdown de seleção para as Roles */}
+            {/* Lógica para adicionar e remover Roles da lista de associações */}
+
+            <View style={styles.buttonView}>
+                <Button title="Salvar" onPress={save} />
+            </View>
+        </View>
+    );
 }

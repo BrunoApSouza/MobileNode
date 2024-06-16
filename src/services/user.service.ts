@@ -1,6 +1,9 @@
 import { authRepository } from "./auth.repository"
 
 class UserService {
+    editUser(userId: string, userName: string) {
+      throw new Error('Method not implemented.')
+    }
 
     private readonly baseUrl = 'http://192.168.0.9:3030/users'
 
