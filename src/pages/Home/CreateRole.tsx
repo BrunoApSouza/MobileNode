@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { roleService } from '../../services/role.service';// Importe o serviço de Role para interagir com o backend
+import { createRole } from '../../services/role.service';// Importe o serviço de Role para interagir com o backend
 
 export default function CreateRoleScreen() {
     const navigation = useNavigation();
@@ -21,7 +21,7 @@ export default function CreateRoleScreen() {
         }
 
         // Chama o serviço para criar a Role
-        roleService.createRole(roleName)
+        createRole(roleName)
             .then(() => {
                 // Se a Role foi criada com sucesso, navega de volta para a tela anterior
                 navigation.goBack();

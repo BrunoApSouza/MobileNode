@@ -44,23 +44,21 @@ export default function LoginPage() {
 
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../Types/types';;
 
 export default function LoginScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleListUsers = () => {
-        // Navegar para a tela de listagem de usuários
         navigation.navigate('UserList');
     };
 
     const handleListRoles = () => {
-        // Navegar para a tela de listagem de roles
         navigation.navigate('RoleList');
     };
 
     const handleCreateRole = () => {
-        // Navegar para a tela de cadastro de uma nova role
         navigation.navigate('CreateRole');
     };
 
@@ -82,3 +80,4 @@ const styles = StyleSheet.create({
         padding: 20,
     },
 });
+

@@ -1,40 +1,36 @@
-// src/pages/user/EditUserScreen.tsx
-
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { userService } from '../../services/user.service'; // Importe o serviço de usuário para interagir com o backend
+import { userService } from '../../services/user.service';
 
 interface EditUserScreenProps {
   route: {
     params: {
-      userId: string; // parâmetro para o ID do usuário a ser editado
+      userId: string; // O tipo de userId deve ser ajustado conforme necessário
     };
   };
 }
 
 const EditUserScreen: React.FC<EditUserScreenProps> = ({ route }) => {
   const navigation = useNavigation();
-  const { userId } = route.params; // obter o ID do usuário a ser editado
+  const { userId } = route.params; // Captura o userId do parâmetro de rota
 
-  const [userName, setUserName] = useState(''); // estado para armazenar o novo nome do usuário
+  const [userName, setUserName] = useState('');
 
   const handleBack = () => {
     navigation.goBack();
   };
 
-    const handleEditUser = () => {
-        userService.editUser(userId, userName)
-            .then(() => {
-                // Se o usuário foi editado com sucesso, navega de volta para a tela anterior
-                navigation.goBack();
-            })
-            .catch(error => {
-                // Trata erros de edição de usuário
-                console.error('Erro ao editar usuário:', error);
-                alert('Erro ao editar o usuário. Por favor, tente novamente.');
-            });
-    };
+  const handleEditUser = () => {
+    userService.editUser(userId, userName)
+      .then(() => {
+        navigation.goBack();
+      })
+      .catch(error => {
+        console.error('Erro ao editar usuário:', error);
+        alert('Erro ao editar o usuário. Por favor, tente novamente.');
+      });
+  };
 
   return (
     <View style={styles.container}>
